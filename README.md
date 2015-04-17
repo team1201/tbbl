@@ -10,3 +10,7 @@ TEAM1201 Builder Basement Library
 
 这些 builder 的大部分功能是一致的，因此我希望将这些一致的功能整合在一起，而不是每次更新都要更新多次。
 
+# 1. 依赖
+
+- https://github.com/zrong/python
+- https://github.com/team1201/xlc
