@@ -7,14 +7,17 @@
 ########################################
 
 import os
+import subprocess
+import shutil
 from zrong import (slog, ZrongError)
 from zrong.base import (list_dir, copy_dir, get_files)
 import zrong.lua as lua
 from zrong.gettext import Gettext
-from tbbl.base import write_by_jinja, print_sep
+from tbbl.base import (write_by_jinja, print_sep)
 
 class AniDef(object):
-    def __init__(self, aniDir, aniArg, gendef):
+    def __init__(self, conf, aniDir, aniArg, gendef):
+        self._conf = conf
         self._aniDir = aniDir
         self._aniArg = aniArg
         self._piecedirs = None
@@ -85,8 +88,8 @@ class AniDef(object):
                 }],
         }
         defName = 'ani_def_%s.lua'%ani.split('_')[1]
-        defFile = self.conf.getClientPath('res', 'ani', defName)
-        write_by_jinja(self.conf.getJinjaTempl('ani_def.lua'), defFile, sub)
+        defFile = self._conf.getClientPath('res', 'ani', defName)
+        write_by_jinja(self._conf.getJinjaTempl('ani_def.lua'), defFile, sub)
         slog.info('Generate a ani_def file: %s.'%defFile)
 
     # 2015-01-13 DEPARTED
@@ -331,7 +334,7 @@ class ResBase(object):
         res = self.conf.getGit('resource', 'path')
         sourcedir = os.path.join(res, 'test')
         targetdir = self.conf.getClientPath('res', 'test')
-        _print_copy(sourcedir, targetdir)
+        self._print_copy(sourcedir, targetdir)
         if os.path.exists(targetdir):
             shutil.rmtree(targetdir)
         shutil.copytree(sourcedir, targetdir)
@@ -342,8 +345,8 @@ class ResBase(object):
             gt = Gettext(True, self.conf.getExe('gettext'))
         else:
             gt = Gettext()
-        po_file = self.conf.getClientPath("i18n", args.lang+'.po')
-        mo_file = self.conf.getClientPath("res", args.lang)
+        po_file = self.conf.getClientPath("i18n", self.args.lang+'.po')
+        mo_file = self.conf.getClientPath("res", self.args.lang)
         if not os.path.exists(po_file):
             slog.error('CANNOT find the po file: [%s]!'%po_file)
             return
@@ -366,7 +369,7 @@ class ResBase(object):
         resDir = self.conf.getClientPath('res')
         self._rebuildDir(resDir)
 
-        self.plist([])
+        self.plst([])
         self.pdir([])
         self.arm([])
         self.fnt([])

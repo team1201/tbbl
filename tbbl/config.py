@@ -198,10 +198,14 @@ class CommandLineBase(object):
 
     def addAndroid(self, conf):
         parserAndroid = self.subParsers.add_parser('android', help='Android 打包和上传。')
+        parserAndroid.add_argument('--upload', action='store_true',
+            help='上传最新的包到 fir.im。')
         return parserAndroid
 
     def addIOS(self, conf):
         parserIOS = self.subParsers.add_parser('ios', help='iOS 打包和上传。')
+        parserIOS.add_argument('--upload', action='store_true',
+            help='上传最新的包到 fir.im。')
         return parserIOS
 
     def checkArgs(self, conf, argv=None):

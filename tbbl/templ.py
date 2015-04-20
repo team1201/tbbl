@@ -7,7 +7,8 @@
 ########################################
 
 import os
-from zrong import slog, git
+from zrong import (slog, git)
+from zrong.base import write_by_templ
 from tbbl.base import (write_by_jinja, print_sep)
 
 class TemplBase(object):
@@ -31,14 +32,14 @@ class TemplBase(object):
 
     def runapp(self):
         print_sep('\nStart to generate runapp.', True, 40)
-        if conf.is_windows:
+        if self.conf.is_windows:
             templ = 'runapp.bat'
         else:
             templ = 'runapp.sh'
-        confpath = conf.getClientPath(templ)
-        write_by_templ(conf.getStringTempl(templ),
+        confpath = self.conf.getClientPath(templ)
+        write_by_templ(self.conf.getStringTempl(templ),
                 confpath,
-                {'CLIENT_PATH':conf.getClientPath()},
+                {'CLIENT_PATH':self.conf.getClientPath()},
                 safe=True)
         print_sep('[%s] has generated.'%confpath, False, 40)
 
