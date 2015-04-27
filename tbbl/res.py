@@ -87,7 +87,8 @@ class AniDef(object):
                 'range':{'start':1,'end':pieceNum},
                 }],
         }
-        defName = 'ani_def_%s.lua'%ani.split('_')[1]
+        # animation file is started by "ani_", main name starts from index 4.
+        defName = 'ani_def_%s.lua'%ani[4:]
         defFile = self._conf.getClientPath('res', 'ani', defName)
         write_by_jinja(self._conf.getJinjaTempl('ani_def.lua'), defFile, sub)
         slog.info('Generate a ani_def file: %s.'%defFile)
