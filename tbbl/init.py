@@ -9,6 +9,7 @@ import os
 import shutil
 from tbbl import config
 from zrong.base import slog
+from zrong import git
 
 class InitBase(object):
 
@@ -22,7 +23,7 @@ class InitBase(object):
 
     def cloneAGit(self, gitConf, includeUpdate=True):
         exists = os.path.exists(gitConf.path)
-        if args.force and exists:
+        if self.args.force and exists:
             slog.info('Removing git repostory "%s"'%gitConf.path)
             shutil.rmtree(gitConf.path)
             exists = False

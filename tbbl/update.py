@@ -19,7 +19,7 @@ class UpdateBase(object):
         self.args = gargs
         self.parser = parser
 
-    def downloadAndUnzip(fname, removedDirs, unzipDir):
+    def _downloadAndUnzip(self, fname, removedDirs, unzipDir):
         f = tempfile.NamedTemporaryFile(mode='wb', delete=False).name
         ftp_conf = dict(conf.ftp18_conf)
         ftp_conf['start_path'] = ftp_conf['lib_dir']
@@ -37,7 +37,7 @@ class UpdateBase(object):
 
     def lua(self):
         print_sep('\nStart to update the lua framworks.', True, 40)
-        src = conf.getClientPath('src')
+        src = self.conf.getClientPath('src')
         cocos = os.path.join(src, 'cocos')
         quick = os.path.join(src, 'quick')
         zrong = os.path.join(src, 'zrong')
@@ -49,22 +49,22 @@ class UpdateBase(object):
                 cocos, quick, zrong))
             return
 
-        _downloadAndUnzip(conf.lib_conf.lua, [cocos, quick, zrong], src)
+        self._downloadAndUnzip(conf.lib_conf.lua, [cocos, quick, zrong], src)
         print_sep('Update lua framworks has done.', False, 40)
 
     def cpp(self):
         print_sep('\nStart to update the runtime-src directory.', True, 40)
-        gitdir = conf.getDistPath('.git')
+        gitdir = self.conf.getDistPath('.git')
         if os.path.isdir(gitdir):
             slog.info('%s is a git repostory. Do nothing.'%gitdir)
             return
         runtimeDir = conf.getDistPath('runtime-src')
-        _downloadAndUnzip(conf.lib_conf.cpp, [runtimeDir], conf.getDistPath())
+        self._downloadAndUnzip(self.conf.lib_conf.cpp, [runtimeDir], self.conf.getDistPath())
         print_sep('\nUpdate the runtime-src directory has done.', False, 40)
 
     def cocos(self):
         print_sep('\nStart to update the cocos2d-x framewroks.', True, 40)
-        cocos2dx = conf.getDistPath('cocos2d-x')
+        cocos2dx = self.conf.getDistPath('cocos2d-x')
 
         if os.path.islink(cocos2dx):
             slog.info('%s is a link. Do nothing.'%cocos2dx)
@@ -73,14 +73,14 @@ class UpdateBase(object):
             slog.info('%s is a git repostory. Do nothing.'%cocos2dx)
             return
 
-        _downloadAndUnzip(conf.lib_conf.cocos, [cocos2dx], conf.getDistPath())
+        self._downloadAndUnzip(conf.lib_conf.cocos, [cocos2dx], conf.getDistPath())
         print_sep('Update the cocos2d-x frameworks has done.', False, 40)
 
-    def processAGit(self, gitConf):
+    def _processAGit(self, gitConf):
         print_sep('\nStart to update the git repository [%s].'%gitConf.path, True, 40)
         exists = os.path.exists(gitConf.path)
         if exists:
-            if args.force:
+            if self.args.force:
                 gitArgs = git.get_args(gitConf.path, 'reset', '--hard')
                 slog.info(' '.join(gitArgs))
                 subprocess.call(gitArgs)
@@ -96,7 +96,7 @@ class UpdateBase(object):
         self.cpp()
         self.cocos()
         for gitConf in self.conf.git_conf.values():
-            _processAGit(gitConf)
+            self._processAGit(gitConf)
 
     def build(self):
         if self.args.all:

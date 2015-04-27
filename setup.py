@@ -11,7 +11,7 @@ dependency_links = [
 
 entry_points = {
     'console_scripts': [
-        'xlc = xlc:call',
+        'tbbl = tbbl:call',
     ]
 }
 
@@ -25,7 +25,7 @@ classifiers = [
 ]
 
 package_data = {
-    'hhlc':['build.conf'],
+    'tbbl':['build.conf'],
 }
 
 #data_files = [(root, [os.path.join(root, f) for f in files])
@@ -33,12 +33,12 @@ package_data = {
 
 setup(
     name="tbbl",
-    version="0.0.1",
+    version="0.0.3",
     url='http://zengrong.net/',
     author='zrong',
     author_email='zrongzrong@gmail.com',
     description="A basement library for TEAM1201's builder tools.",
-    packages=['tbbl'],
+    packages=['tbbl', 'tbbl.conv', 'tbbl.util'],
     classifiers=classifiers,
     #include_package_data=True,
     #package_data=package_data,

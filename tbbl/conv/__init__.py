@@ -1,1 +1,1 @@
-__all__ = ['md2lua', 'etc']
+__all__ = ['md2lua']

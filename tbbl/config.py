@@ -179,6 +179,8 @@ class CommandLineBase(object):
         parserRes.add_argument('--oth', type=str, nargs='*',
             help='处理其它资源。目标文件夹为 client/res/oth 。'
             '若不提供具体的文件，则处理所有文件。')
+        parserRes.add_argument('--test', action='store_true',
+            help='处理测试用的资源资源。目标文件夹为 client/res/test 。')
         parserRes.add_argument('--gen-def', action='store_true',
             help='仅当 --ani 提供了具体值时有效。'
             '自动生成指定的 ani 动画文件的 ani_def_*.lua 。')
@@ -196,10 +198,14 @@ class CommandLineBase(object):
 
     def addAndroid(self, conf):
         parserAndroid = self.subParsers.add_parser('android', help='Android 打包和上传。')
+        parserAndroid.add_argument('--upload', action='store_true',
+            help='上传最新的包到 fir.im。')
         return parserAndroid
 
     def addIOS(self, conf):
         parserIOS = self.subParsers.add_parser('ios', help='iOS 打包和上传。')
+        parserIOS.add_argument('--upload', action='store_true',
+            help='上传最新的包到 fir.im。')
         return parserIOS
 
     def checkArgs(self, conf, argv=None):
