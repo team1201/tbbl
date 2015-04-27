@@ -55,7 +55,7 @@ class AdminBase(object):
         slog.info('Regenerate "%s" done.'%confFile)
 
     def src(self):
-        srcDIR = conf.getClientPath('src')
+        srcDIR = self.conf.getClientPath('src')
 
         slog.info('Packaging lua framework to a tempfile')
         files = []
