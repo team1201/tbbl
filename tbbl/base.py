@@ -88,7 +88,7 @@ class ConfBase(DictBase):
         return self.getBin('quick/win32/php.exe') if self.is_windows else 'php'
 
     def getBin(self, path):
-        return resource_filename('yhqb', 'bin/'+path)
+        return resource_filename('tbbl', 'bin/'+path)
 
     def getJinjaTempl(self, name):
         return self.getTemplFile(name, 'templ.jinja.%s')

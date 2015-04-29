@@ -331,6 +331,53 @@ class ResBase(object):
     def oth(self, oth):
         self._commonProcess(oth, 'oth')
 
+    def ani(self, ani, gen_def):
+        default, special = self._getSpecialDir('ani')
+        if not default:
+            return
+
+        if special:
+            default = self._merge2Tmp(default, special, ani)
+        aniDef = AniDef(self.conf, default, ani, gen_def)
+        if not aniDef.checkAni():
+            return
+
+        outputDir = self.conf.getClientPath('res', 'ani')
+        self._rebuildDir(outputDir)
+
+        sp = aniDef.getAnisInSpriteSheet()
+        if sp:
+            print_sep('Start to copy existing animations.')
+            for adir in sp:
+                png = adir + '.png'
+                spng = os.path.join(default, png)
+                dpng = os.path.join(outputDir, png)
+                shutil.copyfile(spng, dpng)
+                self._print_copy(spng, dpng)
+
+                plist = adir + '.plist'
+                splist = os.path.join(default, plist)
+                dplist = os.path.join(outputDir, plist)
+                shutil.copyfile(splist, dplist)
+                self._print_copy(splist, dplist)
+            print_sep('Copy existing animations has done.', False)
+
+        defs = aniDef.getAniDefs()
+        if defs:
+            print_sep('Start to copy existing ani_def files.')
+            for anidef in defs:
+                sanidef = os.path.join(default, anidef)
+                danidef = os.path.join(outputDir, anidef)
+                shutil.copyfile(sanidef, danidef)
+                self._print_copy(sanidef, danidef)
+            print_sep('Copy existing ani_def files has done.', False)
+
+        print_sep('Start to convert pieces to animations and generate ani_def files.')
+        for adir in aniDef.getAnisInPiece():
+            self._convertSS(default, outputDir, adir)
+            aniDef.generateADef(adir)
+        print_sep('Converting and generating has done.', False)
+
     def test(self):
         res = self.conf.getGit('resource', 'path')
         sourcedir = os.path.join(res, 'test')
