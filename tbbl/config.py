@@ -124,10 +124,6 @@ class CommandLineBase(object):
             help='生成 client/runapp.bat 或者 client/runapp.sh 用于快速启动模拟器。')
         parserTempl.add_argument('--resinfo', action='store_true', 
             help='生成 client/res/resinfo.lua 。')
-        parserTempl.add_argument('--server', action='store_true', 
-            help='Generate conf/server.lua.')
-        # parserTempl.add_argument('--paysdk', action='store_true', 
-        #     help='生成 client/conf/pay/paysdk.lua 。')
         return parserTempl
 
     def addConf(self, conf):

@@ -383,7 +383,7 @@ class ResBase(object):
     def build(self):
         noAnyArgs = True
         if self.args.plst != None:
-            self.plist(self.args.plst)
+            self.plst(self.args.plst)
             noAnyArgs = False
         if self.args.pdir != None:
             self.pdir(self.args.pdir)

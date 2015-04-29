@@ -66,8 +66,7 @@ class AdminBase(object):
                     continue
                 files.append(path)
         pre = len(srcDIR)-3
-        self.upload218Sim(create_zip(files, pre), 'hhlplayer/src.zip')
-
+        self.upload218Sim(create_zip(files, pre), self.conf.lib_conf.src)
 
     def res(self):
         resDir = self.conf.getClientPath('res')
@@ -82,7 +81,7 @@ class AdminBase(object):
 
         # len('res') == 3, it will includ 'res' prefix in zip file
         pre = len(resDir)-3
-        self.upload218Sim(create_zip(files, pre), 'hhlplayer/res.zip')
+        self.upload218Sim(create_zip(files, pre), self.conf.lib_conf.res)
 
     def cocos(self):
         if not self.isAdmin():

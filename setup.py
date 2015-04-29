@@ -33,7 +33,7 @@ package_data = {
 
 setup(
     name="tbbl",
-    version="0.0.4",
+    version="0.0.5",
     url='http://zengrong.net/',
     author='zrong',
     author_email='zrongzrong@gmail.com',
