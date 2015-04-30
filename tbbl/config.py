@@ -195,9 +195,9 @@ class CommandLineBase(object):
             choices = ['*', 'plst', 'pdir', 'arm', 'ani'], default='*',
             help='指定要处理的文件夹。* 代表所有4个文件夹，默认值为 * 。')
         parserPng.add_argument('--max', type=int, default=90,
-            help='指定最高质量，默认值为90。')
+            help='指定最高质量，最大值100，默认值为90。')
         parserPng.add_argument('--min', type=int, default=60,
-            help='指定最低质量，默认值为60。')
+            help='指定最低质量，最小值0，默认值为60。')
         parserPng.add_argument('--speed', type=int, default=3,
             help='速度质量平衡，从1（最慢）到10（最快）。'
             '速度 10 相比减少图片 5%% 质量, 但是 8 倍于默认的速度。默认值为3。')
