@@ -192,19 +192,17 @@ class CommandLineBase(object):
         parserPng = self.subParsers.add_parser('pngquant', 
             help='使用 pngquant 优化 res 文件夹中的 png 文件。')
         parserPng.add_argument('--dir', type=str, 
-            choices = ['*', 'plst', 'pdir', 'arm', 'ani'],
-            default='*',
+            choices = ['*', 'plst', 'pdir', 'arm', 'ani'], default='*',
             help='指定要处理的文件夹。* 代表所有4个文件夹。')
-        parserPng.add_argument('--max', type=int, 
-            default=90,
+        parserPng.add_argument('--max', type=int, default=90,
             help='指定最高质量。')
-        parserPng.add_argument('--min', type=int, 
-            default=60,
+        parserPng.add_argument('--min', type=int, default=60,
             help='指定最低质量。')
-        parserPng.add_argument('--speed', type=int, 
-            default=3,
+        parserPng.add_argument('--speed', type=int, default=3,
             help='速度质量平衡，从1（最慢）到10（最快）。'
             '速度 10 相比减少图片 5%% 质量, 但是 8 倍于默认的速度。')
+        parserPng.add_argument('--size', type=int, default=768,
+            help='大于这个尺寸的图像才会被转换，默认为768KB。')
         return parserPng
 
     def addServer(self, conf):

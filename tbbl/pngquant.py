@@ -24,6 +24,7 @@ class PngquantBase(object):
         else:
             pqpath = 'pngquant/mac/pngquant'
         self.pq = self.conf.getBin(pqpath)
+        self.file_size = self.args.size*1024
 
     def _get_param(self, inputfile, outputfile):
         quality = "%s-%s"%(self.args.min, self.args.max)
@@ -37,11 +38,16 @@ class PngquantBase(object):
     def _run_dir(self, dirname):
         dirpath = self.conf.getClientPath('res', dirname)
         files = get_files(dirpath, ['png'])
+        filterfiles = []
         for f in files:
-            subprocess.call(self._get_param(f, f))
+            if os.path.getsize(f) > self.file_size:
+                filterfiles.append(f)
+        for f in filterfiles:
+            xargs = self._get_param(f, f)
+            #slog.info(xargs)
+            subprocess.call(xargs)
 
     def run(self):
-        print('run')
         if self.args.dir == "*":
             for dirname in ('pdir', 'plst', 'ani', 'arm'):
                 self._run_dir(dirname)
