@@ -124,10 +124,6 @@ class CommandLineBase(object):
             help='生成 client/runapp.bat 或者 client/runapp.sh 用于快速启动模拟器。')
         parserTempl.add_argument('--resinfo', action='store_true', 
             help='生成 client/res/resinfo.lua 。')
-        parserTempl.add_argument('--server', action='store_true', 
-            help='Generate conf/server.lua.')
-        # parserTempl.add_argument('--paysdk', action='store_true', 
-        #     help='生成 client/conf/pay/paysdk.lua 。')
         return parserTempl
 
     def addConf(self, conf):
@@ -192,6 +188,23 @@ class CommandLineBase(object):
             '目标文件为 client/res/[lang].mo')
         return parserRes
 
+    def addPngquant(self, conf):
+        parserPng = self.subParsers.add_parser('pngquant', 
+            help='使用 pngquant 优化 client/res 文件夹中的 png 文件。')
+        parserPng.add_argument('--dir', type=str, 
+            choices = ['*', 'plst', 'pdir', 'arm', 'ani'], default='*',
+            help='指定要处理的文件夹。* 代表所有4个文件夹，默认值为 * 。')
+        parserPng.add_argument('--max', type=int, default=90,
+            help='指定最高质量，最大值100，默认值为90。')
+        parserPng.add_argument('--min', type=int, default=60,
+            help='指定最低质量，最小值0，默认值为60。')
+        parserPng.add_argument('--speed', type=int, default=3,
+            help='速度质量平衡，从1（最慢）到10（最快）。'
+            '速度 10 相比减少图片 5%% 质量, 但是 8 倍于默认的速度。默认值为3。')
+        parserPng.add_argument('--size', type=int, default=768,
+            help='大于这个尺寸的图像才会被转换，默认为768 KB。')
+        return parserPng
+
     def addServer(self, conf):
         parserServer = self.subParsers.add_parser('server', help='服务器程序控制。')
         return parserServer
@@ -218,6 +231,7 @@ class CommandLineBase(object):
         self.addTempl(conf)
         self.addConf(conf)
         self.addRes(conf)
+        self.addPngquant(conf)
         self.addServer(conf)
         self.addAndroid(conf)
         self.addIOS(conf)

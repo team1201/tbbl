@@ -21,7 +21,7 @@ class UpdateBase(object):
 
     def _downloadAndUnzip(self, fname, removedDirs, unzipDir):
         f = tempfile.NamedTemporaryFile(mode='wb', delete=False).name
-        ftp_conf = dict(conf.ftp18_conf)
+        ftp_conf = dict(self.conf.ftp18_conf)
         ftp_conf['start_path'] = ftp_conf['lib_dir']
         ftp.download_file(fname, f, ftp_conf)
 
@@ -49,7 +49,7 @@ class UpdateBase(object):
                 cocos, quick, zrong))
             return
 
-        self._downloadAndUnzip(conf.lib_conf.lua, [cocos, quick, zrong], src)
+        self._downloadAndUnzip(self.conf.lib_conf.lua, [cocos, quick, zrong], src)
         print_sep('Update lua framworks has done.', False, 40)
 
     def cpp(self):
@@ -59,7 +59,9 @@ class UpdateBase(object):
             slog.info('%s is a git repostory. Do nothing.'%gitdir)
             return
         runtimeDir = conf.getDistPath('runtime-src')
-        self._downloadAndUnzip(self.conf.lib_conf.cpp, [runtimeDir], self.conf.getDistPath())
+        self._downloadAndUnzip(self.conf.lib_conf.cpp, 
+                [runtimeDir], 
+                self.conf.getDistPath())
         print_sep('\nUpdate the runtime-src directory has done.', False, 40)
 
     def cocos(self):
@@ -73,7 +75,9 @@ class UpdateBase(object):
             slog.info('%s is a git repostory. Do nothing.'%cocos2dx)
             return
 
-        self._downloadAndUnzip(conf.lib_conf.cocos, [cocos2dx], conf.getDistPath())
+        self._downloadAndUnzip(self.conf.lib_conf.cocos, 
+                [cocos2dx], 
+                self.conf.getDistPath())
         print_sep('Update the cocos2d-x frameworks has done.', False, 40)
 
     def _processAGit(self, gitConf):
