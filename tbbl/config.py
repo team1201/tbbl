@@ -190,7 +190,7 @@ class CommandLineBase(object):
 
     def addPngquant(self, conf):
         parserPng = self.subParsers.add_parser('pngquant', 
-            help='使用 pngquant 优化 res 文件夹中的 png 文件。')
+            help='使用 pngquant 优化 client/res 文件夹中的 png 文件。')
         parserPng.add_argument('--dir', type=str, 
             choices = ['*', 'plst', 'pdir', 'arm', 'ani'], default='*',
             help='指定要处理的文件夹。* 代表所有4个文件夹，默认值为 * 。')
