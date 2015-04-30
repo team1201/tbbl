@@ -9,6 +9,7 @@
 import os
 import subprocess
 import shutil
+import tempfile
 from zrong import (slog, ZrongError)
 from zrong.base import (list_dir, copy_dir, get_files)
 import zrong.lua as lua
@@ -383,6 +384,9 @@ class ResBase(object):
         sourcedir = os.path.join(res, 'test')
         targetdir = self.conf.getClientPath('res', 'test')
         self._print_copy(sourcedir, targetdir)
+        if not os.path.exists(sourcedir):
+            slog.error('No such file or directory: [%s].'%sourcedir)
+            return
         if os.path.exists(targetdir):
             shutil.rmtree(targetdir)
         shutil.copytree(sourcedir, targetdir)
@@ -454,7 +458,7 @@ class ResBase(object):
             self.test()
             noAnyArgs = False
         if self.args.gettext:
-            self.gettext(sef.args.gettext)
+            self.gettext(self.args.gettext)
             noAnyArgs = False
 
         return noAnyArgs
