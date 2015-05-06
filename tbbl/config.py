@@ -148,8 +148,13 @@ class CommandLineBase(object):
             help='使用默认设置处理所有资源。')
         parserRes.add_argument('--plst', type=str, nargs='*',
             help='处理碎图图像文件。'
-            '将 plst 文件夹中的碎图转换成 SpriteSheet 格式。'
+            '将 plst 文件夹中的碎图转换成 sprite sheet 格式。'
             '目标文件夹为 client/res/plst 。若不提供具体的文件，则处理所有文件。')
+        parserRes.add_argument('--disable-rotation', action='store_true',
+            help='仅当处理 --plst 时有效。'
+            '在调用 Texture Packer 转换 sprite sheet 的时候禁用图片旋转。'
+            '由于滤镜系统的 bug，滤镜在处理旋转的 sprite sheet 时无法显示图片。'
+            '使用这种方式可以避免这个 bug。')
         parserRes.add_argument('--pdir', type=str, nargs='*',
             help='处理 pdir 中的独立图像资源。'
             '目标文件夹为 client/res/pdir 。'
@@ -172,14 +177,22 @@ class CommandLineBase(object):
             '复制已存在的 sprite sheet，'
             '复制已存在的 ani_def_*.lua 动画定义文件。'
             '目标文件夹为 client/res/ani 。若不提供具体的文件，则处理所有文件。')
+        parserRes.add_argument('--gen-def', action='store_true',
+            help='仅当 --ani 提供了具体值时有效。'
+            '自动生成指定的 ani 动画文件的 ani_def_*.lua 。')
+        parserRes.add_argument('--tp-options', type=str, default='',
+            help='仅当处理 --plst 和 --ani 时有效。'
+            '在调用 TexturePacker 转换 sprite sheet 的时候传递指定的参数。'
+            '详细参数说明请参考 TexturePacker 的命令行帮助。'
+            '传递的参数必须使用 \\ 来转义，第一个参数之前必须加一个转义符和空格，'
+            '否则会被命令行认为是一个正常的参数而非当前参数的值。'
+            '例如，要传递 --verbose --format cocos2d 这2个参数，则这样使用：'
+            '--tp-options \\ --verbose\\ --format\\ cocos2d')
         parserRes.add_argument('--oth', type=str, nargs='*',
             help='处理其它资源。目标文件夹为 client/res/oth 。'
             '若不提供具体的文件，则处理所有文件。')
         parserRes.add_argument('--test', action='store_true',
             help='处理测试用的资源资源。目标文件夹为 client/res/test 。')
-        parserRes.add_argument('--gen-def', action='store_true',
-            help='仅当 --ani 提供了具体值时有效。'
-            '自动生成指定的 ani 动画文件的 ani_def_*.lua 。')
         parserRes.add_argument('--gettext', type=str,
             choices=['mo','po'],
             help='转换语言文件。'
