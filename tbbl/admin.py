@@ -8,7 +8,7 @@
 import os
 import subprocess
 from zrong import (slog)
-from zrong.base import (create_zip, DictBase)
+from zrong.base import (list_dir, create_zip, DictBase)
 from zrong.ftp import (get_ftp, check_ftp_conf, upload_file, upload_dir)
 
 class AdminBase(object):
@@ -162,6 +162,44 @@ class AdminBase(object):
         pre = len(srcDIR)+1
         self.upload218Lib(create_zip(files, pre), self.conf.lib_conf.lua)
 
+    def toluaauto(self, bindType):
+        if not self.isAdmin():
+            return
+        inifile = None
+        cwd = self.conf.getDistPath('tolua', 'auto')
+        for f in list_dir(cwd):
+            if f.endswith('.ini') \
+            and f.startswith('cocos2dx_') \
+            and bindType in f.lower():
+                inifile = f
+        if inifile:
+            xarg = [self.conf.getExe('python2'), 'genbindings.py', inifile]
+            slog.warning('toluaauto args: %s', xarg)
+            slog.warning('toluaauto target path: %s', cwd)
+            py = subprocess.Popen(xarg, cwd=cwd)
+            py.wait()
+        else:
+            slog.error('Cannot find a file named %s!'%bindType)
+
+    def toluamanual(self, bindType):
+        if not self.isAdmin():
+            return
+        toluafile = None
+        cwd = self.conf.getDistPath('tolua', 'manual')
+        for f in list_dir(cwd):
+            if f.endswith('.tolua') \
+            and bindType in f.lower():
+                toluafile = f
+        if toluafile:
+            bindName = os.path.join(conf.getDistPath('tolua', 'manual'), toluafile)
+            php = self.conf.getBin('quick/lib/compile_luabinding.php')
+            xarg = [self.conf.getPHP(), php, '-pfx', 'cc', '-d', 
+                    self.conf.getDistPath('runtime-src', 'Classes',
+                        'lua-bindings', 'manual'), bindName]
+            subprocess.call(xarg)
+        else:
+            slog.error('Cannot find a file named %s!'%bindType)
+
     def build(self):
         # After update self or rebuild conf, dismiss all others action.
         if self.args.reconf:
@@ -183,6 +221,12 @@ class AdminBase(object):
             noAnyArgs = False
         if self.args.src:
             self.src()
+            noAnyArgs = False
+        if self.args.toluamanual:
+            self.toluamanual(self.args.toluamanual)
+            noAnyArgs = False
+        if self.args.toluaauto:
+            self.toluaauto(self.args.toluaauto)
             noAnyArgs = False
 
         return noAnyArgs
