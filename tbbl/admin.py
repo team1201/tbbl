@@ -191,7 +191,7 @@ class AdminBase(object):
             and bindType in f.lower():
                 toluafile = f
         if toluafile:
-            bindName = os.path.join(conf.getDistPath('tolua', 'manual'), toluafile)
+            bindName = os.path.join(self.conf.getDistPath('tolua', 'manual'), toluafile)
             php = self.conf.getBin('quick/lib/compile_luabinding.php')
             xarg = [self.conf.getPHP(), php, '-pfx', 'cc', '-d', 
                     self.conf.getDistPath('runtime-src', 'Classes',
