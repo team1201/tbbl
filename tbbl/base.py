@@ -112,6 +112,10 @@ class ConfBase(DictBase):
         subStr = read_file(subFile)
         return eval(subStr)[keyName]
 
+    def getFtpConf(self):
+        curFtp = self.ftp_conf.cur_ftp
+        return DictBase(self.ftp_conf[curFtp])
+
 def absPath(*path):
     return os.path.abspath(os.path.join(*path))
 

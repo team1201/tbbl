@@ -21,7 +21,7 @@ class UpdateBase(object):
 
     def _downloadAndUnzip(self, fname, removedDirs, unzipDir):
         f = tempfile.NamedTemporaryFile(mode='wb', delete=False).name
-        ftp_conf = dict(self.conf.ftp18_conf)
+        ftp_conf = self.conf.getFtpConf()
         ftp_conf['start_path'] = ftp_conf['lib_dir']
         ftp.download_file(fname, f, ftp_conf)
 
@@ -58,7 +58,7 @@ class UpdateBase(object):
         if os.path.isdir(gitdir):
             slog.info('%s is a git repostory. Do nothing.'%gitdir)
             return
-        runtimeDir = conf.getDistPath('runtime-src')
+        runtimeDir = self.conf.getDistPath('runtime-src')
         self._downloadAndUnzip(self.conf.lib_conf.cpp, 
                 [runtimeDir], 
                 self.conf.getDistPath())

@@ -9,7 +9,7 @@ import os
 import subprocess
 from zrong import (slog)
 from zrong.base import (list_dir, create_zip, DictBase)
-from zrong.ftp import (get_ftp, check_ftp_conf, upload_file, upload_dir)
+from zrong.ftp import ( upload_file, upload_dir)
 
 class AdminBase(object):
 
@@ -26,22 +26,22 @@ class AdminBase(object):
         return None
 
     def upload218Tool(self, filePath, remotePath, removeFile):
-        ftpConf = DictBase(self.conf.ftp18_conf)
+        ftpConf = self.conf.getFtpConf()
         ftpConf.start_path = ftpConf.tool_dir
         return upload_file(filePath, remotePath, ftpConf, removeFile)
 
     def upload218Doc(self, dirName, uploadDir):
-        ftpConf = DictBase(self.conf.ftp18_conf)
+        ftpConf = self.conf.getFtpConf()
         ftpConf.start_path = ftpConf.doc_dir
         upload_dir(dirName, uploadDir, ftpConf)
 
     def upload218Lib(self, filePath, remotePath):
-        ftpConf = DictBase(self.conf.ftp18_conf)
+        ftpConf = self.conf.getFtpConf()
         ftpConf.start_path = ftpConf.lib_dir
         return upload_file(filePath, remotePath, ftpConf, True)
 
     def upload218Sim(self, filePath, remotePath, delFile=True):
-        ftpConf = DictBase(self.conf.ftp18_conf)
+        ftpConf = self.conf.getFtpConf()
         ftpConf.start_path = ftpConf.sim_dir
         return upload_file(filePath, remotePath, ftpConf, delFile)
 
