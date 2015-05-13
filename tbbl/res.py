@@ -15,6 +15,7 @@ from zrong.base import (list_dir, copy_dir, get_files)
 import zrong.lua as lua
 from zrong.gettext import Gettext
 from tbbl.base import (write_by_jinja, print_sep)
+from tbbl.conv import tp
 
 class AniDef(object):
     def __init__(self, conf, aniDir, aniArg, gendef):
@@ -246,17 +247,10 @@ class ResBase(object):
         print_sep('Process %s in directory [%s] has done.'
                 %(dirList, souName), False, 40)
 
-    def _convertSS(self, sourceDir, outputDir, dirName):
-        plist_file = os.path.join(outputDir, dirName+".plist")
-        png_file = os.path.join(outputDir, dirName+".png")
-        slog.info("\n.... converting %s", dirName)
-        tpOut = subprocess.check_output([ 
-            self.conf.getExe("tp"),
-            "--sheet", png_file,
-            "--data", plist_file,
-            os.path.join(sourceDir, dirName)
-            ], universal_newlines=True)
-        slog.info("%s\n", tpOut)
+    def _convertSS(self, sourceDir, outputDir, dirName, disrot=False):
+        # print("_convertSS", self.args.tp_options)
+        tp.convert_to_cocos2d(self.conf.getExe("tp"), sourceDir, outputDir, 
+                dirName, disrot, self.args.tp_options)
         
     def plst(self, plist):
         print_sep('Start to process %s in directory plst.'
@@ -277,7 +271,7 @@ class ResBase(object):
             sourceDir = tmpDir
         print_sep('Start to convert spritesheet.')
         for dir_name in plist:
-            self._convertSS(sourceDir, outputDir, dir_name)
+            self._convertSS(sourceDir, outputDir, dir_name, self.args.disable_rotation)
         print_sep('Spritsheet converting has done.', False)
         if tmpDir:
             slog.info('Remove temporary directory [%s].'%tmpDir)

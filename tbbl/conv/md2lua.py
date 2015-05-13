@@ -8,15 +8,15 @@
 #        Email: allen.fantasy@gmail.com
 #     HomePage: http://weibo.com/5d13
 #      Version: 0.1.1
-#   LastChange: 2014-11-25 zrong
+#   LastChange: 2015-05-06 zrong
 #      History:
 #=============================================================================
 '''
 
 import sys
 import os
-from zrong.base import (write_file, read_file, 
-        slog, list_dir)
+from zrong import (slog)
+from zrong.base import (write_file, read_file, list_dir)
 
 lineno = 0
 verNum = 0
@@ -92,7 +92,7 @@ def proc(fullname):
                     flag = 1
                     slog.info('code: %s, title: %s', p.code, p.title)
                 except:
-                    slog.info("%s has err!!!%s" ,lineno,line)
+                    slog.error("%s has err!!!%s" ,lineno,line)
                     return
             continue
         elif flag == 1:

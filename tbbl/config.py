@@ -56,6 +56,11 @@ class CommandLineBase(object):
                 parser.add_argument('--vendor', type=str, 
                         default='team1201', choices=['team1201'],
                     help='指定运营商。默认使用 team1201 。')
+            elif typ == 'ftp':
+                parser.add_argument('--ftp', type=str, 
+                        choices=['18', '1201'],
+                    help='指定使用哪个 ftp 服务器。1201 是外网服务器。18 是内网服务器。'
+                        '若不提供此参数，则会使用配置文件中 ftp_conf.cur_ftp 的值。')
 
     def addGitArgs(self, parser, git_conf, init):
         gitreponames = sorted(git_conf.keys())
@@ -68,19 +73,20 @@ class CommandLineBase(object):
     def addAdmin(self, conf):
         parserAdmin = self.subParsers.add_parser('admin', 
             help='管理员专用。一般为 zrong 使用。')
+        self.addCommonArgs(parserAdmin, 'ftp')
         parserAdmin.add_argument('--src', action='store_true', 
-            help='打包 src 文件夹并上传到18 。当然包含 --lua 参数中的所有内容。')
+            help='打包 src 文件夹并上传到 ftp 服务器 。当然包含 --lua 参数中的所有内容。')
         parserAdmin.add_argument('--res', action='store_true', 
-            help='打包 res 文件夹并上传到18。')
+            help='打包 res 文件夹并上传到 ftp 服务器。')
         parserAdmin.add_argument('--reconf', action='store_true', 
             help='重建 yhqb_conf.py.')
         parserAdmin.add_argument('--cocos', action='store_true', 
-            help='（zrong 专用）打包 cocos2d-x 源码，并上传到18。')
+            help='（zrong 专用）打包 cocos2d-x 源码，并上传到 ftp 服务器。')
         parserAdmin.add_argument('--lua', action='store_true', 
             help='（zrong 专用）打包 lua 框架（包含src目录下的'
-            'quick、cocos、zrong 三个文件夹）并上传到18。')
+            'quick、cocos、zrong 三个文件夹）并上传到 ftp 服务器。')
         parserAdmin.add_argument('--cpp', action='store_true', 
-            help='（zrong 专用）打包 frameworks/runtime-src 文件夹并上传到18。')
+            help='（zrong 专用）打包 frameworks/runtime-src 文件夹并上传到 ftp 服务器。')
         parserAdmin.add_argument('--toluaauto', type=str,
             choices = ['filter', 'dragonbones', 'webview'],
             help='（zrong 专用）创建 lua 自动绑定文件。')
@@ -105,6 +111,7 @@ class CommandLineBase(object):
             help='在 git 仓库中执行 "git reset --hard" 并推送(pull)。')
         parserUpdate.add_argument('-a', '--all', action='store_true', 
             help='采用默认设置更新所有。')
+        self.addCommonArgs(parserUpdate, 'ftp')
         parserUpdate.add_argument('--cocos', action='store_true', 
             help='更新 cocos2d-x 框架。目标路径 client/frameworks/cocos2d-x 。')
         parserUpdate.add_argument('--lua', action='store_true', 
@@ -148,8 +155,13 @@ class CommandLineBase(object):
             help='使用默认设置处理所有资源。')
         parserRes.add_argument('--plst', type=str, nargs='*',
             help='处理碎图图像文件。'
-            '将 plst 文件夹中的碎图转换成 SpriteSheet 格式。'
+            '将 plst 文件夹中的碎图转换成 sprite sheet 格式。'
             '目标文件夹为 client/res/plst 。若不提供具体的文件，则处理所有文件。')
+        parserRes.add_argument('--disable-rotation', action='store_true',
+            help='仅当处理 --plst 时有效。'
+            '在调用 Texture Packer 转换 sprite sheet 的时候禁用图片旋转。'
+            '由于滤镜系统的 bug，滤镜在处理旋转的 sprite sheet 时无法显示图片。'
+            '使用这种方式可以避免这个 bug。')
         parserRes.add_argument('--pdir', type=str, nargs='*',
             help='处理 pdir 中的独立图像资源。'
             '目标文件夹为 client/res/pdir 。'
@@ -172,14 +184,22 @@ class CommandLineBase(object):
             '复制已存在的 sprite sheet，'
             '复制已存在的 ani_def_*.lua 动画定义文件。'
             '目标文件夹为 client/res/ani 。若不提供具体的文件，则处理所有文件。')
+        parserRes.add_argument('--gen-def', action='store_true',
+            help='仅当 --ani 提供了具体值时有效。'
+            '自动生成指定的 ani 动画文件的 ani_def_*.lua 。')
+        parserRes.add_argument('--tp-options', type=str, default='',
+            help='仅当处理 --plst 和 --ani 时有效。'
+            '在调用 TexturePacker 转换 sprite sheet 的时候传递指定的参数。'
+            '详细参数说明请参考 TexturePacker 的命令行帮助。'
+            '传递的参数必须使用 \\ 来转义，第一个参数之前必须加一个转义符和空格，'
+            '否则会被命令行认为是一个正常的参数而非当前参数的值。'
+            '例如，要传递 --verbose --format cocos2d 这2个参数，则这样使用：'
+            '--tp-options \\ --verbose\\ --format\\ cocos2d')
         parserRes.add_argument('--oth', type=str, nargs='*',
             help='处理其它资源。目标文件夹为 client/res/oth 。'
             '若不提供具体的文件，则处理所有文件。')
         parserRes.add_argument('--test', action='store_true',
             help='处理测试用的资源资源。目标文件夹为 client/res/test 。')
-        parserRes.add_argument('--gen-def', action='store_true',
-            help='仅当 --ani 提供了具体值时有效。'
-            '自动生成指定的 ani 动画文件的 ani_def_*.lua 。')
         parserRes.add_argument('--gettext', type=str,
             choices=['mo','po'],
             help='转换语言文件。'
