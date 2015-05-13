@@ -59,7 +59,8 @@ class CommandLineBase(object):
             elif typ == 'ftp':
                 parser.add_argument('--ftp', type=str, 
                         choices=['18', '1201'],
-                    help='指定使用哪个 ftp 服务器。1201 是外网服务器。18 是内网服务器。')
+                    help='指定使用哪个 ftp 服务器。1201 是外网服务器。18 是内网服务器。'
+                        '若不提供此参数，则会使用配置文件中 ftp_conf.cur_ftp 的值。')
 
     def addGitArgs(self, parser, git_conf, init):
         gitreponames = sorted(git_conf.keys())
@@ -74,18 +75,18 @@ class CommandLineBase(object):
             help='管理员专用。一般为 zrong 使用。')
         self.addCommonArgs(parserAdmin, 'ftp')
         parserAdmin.add_argument('--src', action='store_true', 
-            help='打包 src 文件夹并上传到18 。当然包含 --lua 参数中的所有内容。')
+            help='打包 src 文件夹并上传到 ftp 服务器 。当然包含 --lua 参数中的所有内容。')
         parserAdmin.add_argument('--res', action='store_true', 
-            help='打包 res 文件夹并上传到18。')
+            help='打包 res 文件夹并上传到 ftp 服务器。')
         parserAdmin.add_argument('--reconf', action='store_true', 
             help='重建 yhqb_conf.py.')
         parserAdmin.add_argument('--cocos', action='store_true', 
-            help='（zrong 专用）打包 cocos2d-x 源码，并上传到18。')
+            help='（zrong 专用）打包 cocos2d-x 源码，并上传到 ftp 服务器。')
         parserAdmin.add_argument('--lua', action='store_true', 
             help='（zrong 专用）打包 lua 框架（包含src目录下的'
-            'quick、cocos、zrong 三个文件夹）并上传到18。')
+            'quick、cocos、zrong 三个文件夹）并上传到 ftp 服务器。')
         parserAdmin.add_argument('--cpp', action='store_true', 
-            help='（zrong 专用）打包 frameworks/runtime-src 文件夹并上传到18。')
+            help='（zrong 专用）打包 frameworks/runtime-src 文件夹并上传到 ftp 服务器。')
         parserAdmin.add_argument('--toluaauto', type=str,
             choices = ['filter', 'dragonbones', 'webview'],
             help='（zrong 专用）创建 lua 自动绑定文件。')
