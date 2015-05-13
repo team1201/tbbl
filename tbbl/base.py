@@ -6,6 +6,7 @@ from pkg_resources import (resource_filename, resource_string)
 from jinja2 import Template
 from zrong import slog
 from zrong.base import (DictBase,write_by_templ,read_file,write_file)
+from tbbl import TEAM1201Error
 
 class ConfBase(DictBase):
 
@@ -112,9 +113,16 @@ class ConfBase(DictBase):
         subStr = read_file(subFile)
         return eval(subStr)[keyName]
 
-    def getFtpConf(self):
-        curFtp = self.ftp_conf.cur_ftp
-        return DictBase(self.ftp_conf[curFtp])
+    def getFtpConf(self, ftpname):
+        curFtp = ftpname if ftpname else self.ftp_conf.cur_ftp
+        if not curFtp:
+            raise TEAM1201Error('Cannnot get a ftp config name! '
+                                'Please check --ftp arg or '
+                                'set cur_ftp in section ftp_conf of config file.')
+        ftpConf = self.ftp_conf[curFtp]
+        if not ftpConf:
+            raise TEAM1201Error('Cannnot get a ftp config object named %s!'%curFtp)
+        return DictBase(ftpConf)
 
 def absPath(*path):
     return os.path.abspath(os.path.join(*path))

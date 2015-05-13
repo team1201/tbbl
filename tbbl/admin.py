@@ -26,22 +26,22 @@ class AdminBase(object):
         return None
 
     def upload218Tool(self, filePath, remotePath, removeFile):
-        ftpConf = self.conf.getFtpConf()
+        ftpConf = self.conf.getFtpConf(self.args.ftp)
         ftpConf.start_path = ftpConf.tool_dir
         return upload_file(filePath, remotePath, ftpConf, removeFile)
 
     def upload218Doc(self, dirName, uploadDir):
-        ftpConf = self.conf.getFtpConf()
+        ftpConf = self.conf.getFtpConf(self.args.ftp)
         ftpConf.start_path = ftpConf.doc_dir
         upload_dir(dirName, uploadDir, ftpConf)
 
     def upload218Lib(self, filePath, remotePath):
-        ftpConf = self.conf.getFtpConf()
+        ftpConf = self.conf.getFtpConf(self.args.ftp)
         ftpConf.start_path = ftpConf.lib_dir
         return upload_file(filePath, remotePath, ftpConf, True)
 
     def upload218Sim(self, filePath, remotePath, delFile=True):
-        ftpConf = self.conf.getFtpConf()
+        ftpConf = self.conf.getFtpConf(self.args.ftp)
         ftpConf.start_path = ftpConf.sim_dir
         return upload_file(filePath, remotePath, ftpConf, delFile)
 

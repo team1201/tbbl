@@ -21,7 +21,7 @@ class UpdateBase(object):
 
     def _downloadAndUnzip(self, fname, removedDirs, unzipDir):
         f = tempfile.NamedTemporaryFile(mode='wb', delete=False).name
-        ftp_conf = self.conf.getFtpConf()
+        ftp_conf = self.conf.getFtpConf(self.args.ftp)
         ftp_conf['start_path'] = ftp_conf['lib_dir']
         ftp.download_file(fname, f, ftp_conf)
 

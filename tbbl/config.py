@@ -56,6 +56,10 @@ class CommandLineBase(object):
                 parser.add_argument('--vendor', type=str, 
                         default='team1201', choices=['team1201'],
                     help='指定运营商。默认使用 team1201 。')
+            elif typ == 'ftp':
+                parser.add_argument('--ftp', type=str, 
+                        choices=['18', '1201'],
+                    help='指定使用哪个 ftp 服务器。1201 是外网服务器。18 是内网服务器。')
 
     def addGitArgs(self, parser, git_conf, init):
         gitreponames = sorted(git_conf.keys())
@@ -68,6 +72,7 @@ class CommandLineBase(object):
     def addAdmin(self, conf):
         parserAdmin = self.subParsers.add_parser('admin', 
             help='管理员专用。一般为 zrong 使用。')
+        self.addCommonArgs(parserAdmin, 'ftp')
         parserAdmin.add_argument('--src', action='store_true', 
             help='打包 src 文件夹并上传到18 。当然包含 --lua 参数中的所有内容。')
         parserAdmin.add_argument('--res', action='store_true', 
@@ -105,6 +110,7 @@ class CommandLineBase(object):
             help='在 git 仓库中执行 "git reset --hard" 并推送(pull)。')
         parserUpdate.add_argument('-a', '--all', action='store_true', 
             help='采用默认设置更新所有。')
+        self.addCommonArgs(parserUpdate, 'ftp')
         parserUpdate.add_argument('--cocos', action='store_true', 
             help='更新 cocos2d-x 框架。目标路径 client/frameworks/cocos2d-x 。')
         parserUpdate.add_argument('--lua', action='store_true', 
